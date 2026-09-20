@@ -1,8 +1,8 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import { default as helmet } from 'helmet';
+import { rateLimit } from 'express-rate-limit';
 import { env } from './config/env.js';
 import { errorHandler, notFound } from './middleware/error-handler.js';
 import { authRouter } from './routes/auth.routes.js';
