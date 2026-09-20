@@ -2,7 +2,9 @@ import type { ApiResponse } from '../types/api';
 import { ApiClientError } from '../types/api';
 import type { User } from '../types/user';
 
-const baseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
+const configuredApiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:4000';
+export const backendOrigin = configuredApiUrl.replace(/\/+$/, '').replace(/\/api$/, '');
+const baseUrl = `${backendOrigin}/api`;
 let accessToken: string | null = null;
 let refreshPromise: Promise<{ user: User; accessToken: string }> | null = null;
 let onRefresh: ((session: { user: User; accessToken: string }) => void) | undefined;
