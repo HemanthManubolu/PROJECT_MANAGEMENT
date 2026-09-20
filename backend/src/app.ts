@@ -1,7 +1,7 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import * as helmetModule from 'helmet';
+import helmet from 'helmet';
 import { rateLimit } from 'express-rate-limit';
 import { env } from './config/env.js';
 import { errorHandler, notFound } from './middleware/error-handler.js';
@@ -13,7 +13,6 @@ import { activityRouter } from './routes/activity.routes.js';
 import { notificationRouter } from './routes/notification.routes.js';
 import { userRouter } from './routes/user.routes.js';
 import { dashboardRouter } from './routes/dashboard.routes.js';
-const helmet = helmetModule.default;
 export const app = express();
 app.use(helmet());
 app.use(cors({ origin: env.CLIENT_ORIGIN, credentials: true }));
