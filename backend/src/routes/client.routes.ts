@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { createClient, deleteClient, getClient, listClients, updateClient } from '../controllers/client.controller.js';
+import { authenticate, requireRoles } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { clientSchema } from '../validators/client.validator.js';
+import { idParams } from '../validators/common.js';
+import { asyncHandler } from '../utils/async-handler.js';
+export const clientRouter = Router();
+clientRouter.use(authenticate);
+clientRouter.get('/', requireRoles('ADMIN', 'PROJECT_MANAGER'), asyncHandler(listClients));
+clientRouter.get('/:id', requireRoles('ADMIN', 'PROJECT_MANAGER'), validate({ params: idParams }), asyncHandler(getClient));
+clientRouter.post('/', requireRoles('ADMIN'), validate({ body: clientSchema }), asyncHandler(createClient));
+clientRouter.patch('/:id', requireRoles('ADMIN'), validate({ params: idParams, body: clientSchema.partial() }), asyncHandler(updateClient));
+clientRouter.delete('/:id', requireRoles('ADMIN'), validate({ params: idParams }), asyncHandler(deleteClient));

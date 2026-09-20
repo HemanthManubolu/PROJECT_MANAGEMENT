@@ -1,0 +1,15 @@
+import { Router } from 'express';
+import { createTask, deleteTask, getTask, listTasks, updateTask, updateTaskStatus } from '../controllers/task.controller.js';
+import { authenticate, requireRoles } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { idParams, projectParams } from '../validators/common.js';
+import { createTaskSchema, taskQuerySchema, updateStatusSchema, updateTaskSchema } from '../validators/task.validator.js';
+import { asyncHandler } from '../utils/async-handler.js';
+export const taskRouter = Router();
+taskRouter.use(authenticate);
+taskRouter.get('/tasks', validate({ query: taskQuerySchema }), asyncHandler(listTasks));
+taskRouter.post('/projects/:projectId/tasks', requireRoles('ADMIN', 'PROJECT_MANAGER'), validate({ params: projectParams, body: createTaskSchema }), asyncHandler(createTask));
+taskRouter.get('/tasks/:id', validate({ params: idParams }), asyncHandler(getTask));
+taskRouter.patch('/tasks/:id', requireRoles('ADMIN', 'PROJECT_MANAGER'), validate({ params: idParams, body: updateTaskSchema }), asyncHandler(updateTask));
+taskRouter.patch('/tasks/:id/status', validate({ params: idParams, body: updateStatusSchema }), asyncHandler(updateTaskStatus));
+taskRouter.delete('/tasks/:id', requireRoles('ADMIN', 'PROJECT_MANAGER'), validate({ params: idParams }), asyncHandler(deleteTask));

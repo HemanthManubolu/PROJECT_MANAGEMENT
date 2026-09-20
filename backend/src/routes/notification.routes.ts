@@ -1,0 +1,12 @@
+import { Router } from 'express';
+import { listNotifications, markAllRead, markRead, unreadCount } from '../controllers/notification.controller.js';
+import { authenticate } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { idParams } from '../validators/common.js';
+import { asyncHandler } from '../utils/async-handler.js';
+export const notificationRouter = Router();
+notificationRouter.use(authenticate);
+notificationRouter.get('/', asyncHandler(listNotifications));
+notificationRouter.get('/unread-count', asyncHandler(unreadCount));
+notificationRouter.patch('/read-all', asyncHandler(markAllRead));
+notificationRouter.patch('/:id/read', validate({ params: idParams }), asyncHandler(markRead));

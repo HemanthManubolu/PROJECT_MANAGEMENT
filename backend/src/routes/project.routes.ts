@@ -1,0 +1,14 @@
+import { Router } from 'express';
+import { createProject, deleteProject, getProject, listProjects, updateProject } from '../controllers/project.controller.js';
+import { authenticate, requireRoles } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { idParams } from '../validators/common.js';
+import { projectSchema, projectUpdateSchema } from '../validators/project.validator.js';
+import { asyncHandler } from '../utils/async-handler.js';
+export const projectRouter = Router();
+projectRouter.use(authenticate, requireRoles('ADMIN', 'PROJECT_MANAGER'));
+projectRouter.get('/', asyncHandler(listProjects));
+projectRouter.get('/:id', validate({ params: idParams }), asyncHandler(getProject));
+projectRouter.post('/', validate({ body: projectSchema }), asyncHandler(createProject));
+projectRouter.patch('/:id', validate({ params: idParams, body: projectUpdateSchema }), asyncHandler(updateProject));
+projectRouter.delete('/:id', validate({ params: idParams }), asyncHandler(deleteProject));

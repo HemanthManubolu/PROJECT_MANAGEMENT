@@ -1,0 +1,16 @@
+import { Router } from 'express';
+import { createUser, deleteUser, getUser, listDevelopers, listUsers, updateUser } from '../controllers/user.controller.js';
+import { authenticate, requireRoles } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { idParams } from '../validators/common.js';
+import { userCreateSchema, userUpdateSchema } from '../validators/user.validator.js';
+import { asyncHandler } from '../utils/async-handler.js';
+export const userRouter = Router();
+userRouter.use(authenticate);
+userRouter.get('/developers', requireRoles('ADMIN', 'PROJECT_MANAGER'), asyncHandler(listDevelopers));
+userRouter.use(requireRoles('ADMIN'));
+userRouter.get('/', asyncHandler(listUsers));
+userRouter.get('/:id', validate({ params: idParams }), asyncHandler(getUser));
+userRouter.post('/', validate({ body: userCreateSchema }), asyncHandler(createUser));
+userRouter.patch('/:id', validate({ params: idParams, body: userUpdateSchema }), asyncHandler(updateUser));
+userRouter.delete('/:id', validate({ params: idParams }), asyncHandler(deleteUser));

@@ -1,0 +1,10 @@
+import type { RequestHandler } from 'express';
+import { authService } from '../services/auth.service.js';
+import { refreshCookieOptions } from '../utils/auth.js';
+import { ok } from '../utils/response.js';
+import { currentUser } from './context.js';
+export const register: RequestHandler = async (request, response) => { const result = await authService.register(request.body); response.cookie('refreshToken', result.refreshToken, refreshCookieOptions); ok(response, { user: result.user, accessToken: result.accessToken }, 201); };
+export const login: RequestHandler = async (request, response) => { const result = await authService.login(request.body); response.cookie('refreshToken', result.refreshToken, refreshCookieOptions); ok(response, { user: result.user, accessToken: result.accessToken }); };
+export const refresh: RequestHandler = async (request, response) => { const result = await authService.refresh(request.cookies.refreshToken as string | undefined ?? ''); response.cookie('refreshToken', result.refreshToken, refreshCookieOptions); ok(response, { user: result.user, accessToken: result.accessToken }); };
+export const logout: RequestHandler = async (request, response) => { await authService.logout(request.cookies.refreshToken as string | undefined); response.clearCookie('refreshToken', refreshCookieOptions); ok(response, { loggedOut: true }); };
+export const me: RequestHandler = async (request, response) => ok(response, await authService.me(currentUser(request).id));

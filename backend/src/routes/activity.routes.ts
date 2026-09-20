@@ -1,0 +1,10 @@
+import { Router } from 'express';
+import { listActivity, listProjectActivity } from '../controllers/activity.controller.js';
+import { authenticate } from '../middleware/auth.js';
+import { validate } from '../middleware/validate.js';
+import { projectParams } from '../validators/common.js';
+import { asyncHandler } from '../utils/async-handler.js';
+export const activityRouter = Router();
+activityRouter.use(authenticate);
+activityRouter.get('/', asyncHandler(listActivity));
+activityRouter.get('/projects/:projectId/activity', validate({ params: projectParams }), asyncHandler(listProjectActivity));

@@ -1,0 +1,11 @@
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { App } from './App';
+import { store } from './app/store';
+import { setSession } from './features/auth/authSlice';
+import { setRefreshListener } from './services/api';
+import './index.css';
+setRefreshListener((session) => store.dispatch(setSession(session)));
+createRoot(document.getElementById('root')!).render(<StrictMode><Provider store={store}><BrowserRouter><App/></BrowserRouter></Provider></StrictMode>);
